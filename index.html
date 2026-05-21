@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Мастер и Маргарита — литературный путеводитель</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', 'Palatino', serif;
+            background: #f4efe6;
+            color: #2c2418;
+            line-height: 1.5;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #1e2a3a 0%, #0f1a24 100%);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 4px solid #c9a03d;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            letter-spacing: 1px;
+            color: #ecd67a;
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #b9c7d1;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        .author {
+            color: #8a9aa8;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Карта */
+        .map-wrapper {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        #map {
+            width: 100%;
+            height: 500px;
+            border-radius: 16px;
+            border: 1px solid #ddd;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: #ddd8ce;
+        }
+
+        /* Инфо-панель */
+        .info-panel {
+            max-width: 900px;
+            margin: 1.5rem auto;
+            padding: 1rem 1.5rem;
+            background: #e8e0d3;
+            border-left: 5px solid #c9a03d;
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: #3a2e1f;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Легенда */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            font-size: 0.8rem;
+            color: #5e4b2f;
+        }
+
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Подвал */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: #e2d9cd;
+            color: #6b5a44;
+            font-size: 0.75rem;
+            border-top: 1px solid #cec2ae;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            #map { height: 450px; }
+            .legend { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🗺️ Мастер и Маргарита</h1>
+    <div class="subtitle">Литературный путеводитель по московским местам романа</div>
+    <div class="author">Михаил Булгаков · Интерактивная карта</div>
+</div>
+
+<div class="map-wrapper">
+    <div id="map"></div>
+</div>
+
+<div class="info-panel">
+    ✦ Нажмите на любую метку — откроется карточка места: фотогалерея, описание и цитата ✦<br>
+    <div class="legend">
+        <span>📍 <strong>15 литературных локаций</strong></span>
+        <span>📸 <strong>Фотографии</strong> каждого места сегодня</span>
+        <span>📖 <strong>Цитаты</strong> из романа</span>
+        <span>🗺️ <strong>Маршрут</strong> по дорогам Москвы</span>
+    </div>
+</div>
+
+<footer>
+    Проект по роману М.А. Булгакова «Мастер и Маргарита» | Московские адреса и прототипы | 2026
+</footer>
+
+<!-- API Яндекс Карт (с твоим ключом) -->
+<script src="https://api-maps.yandex.ru/2.1/?apikey=c846f73b-e267-4cf3-9e3b-c4bec0609022&lang=ru_RU"></script>
+
+<script>
+    // ============================================================
+    // 15 ЛОКАЦИЙ с несколькими фотографиями, описаниями и цитатами
+    // ============================================================
+    const places = [
+        {
+            name: "Патриаршие пруды",
+            coords: [55.76483, 37.603524],
+            desc: "Здесь Воланд впервые появляется перед Берлиозом и Бездомным. Предсказана гибель Берлиоза под трамваем. Аннушка разливает подсолнечное масло — место, где начинается мистика романа.",
+            quote: "«Никогда не разговаривайте с неизвестными. ... Однажды весной, в час небывало жаркого заката, в Москве, на Патриарших прудах, появились два гражданина...»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Moscow_Patriarch_Ponds_05-2015.jpg/600px-Moscow_Patriarch_Ponds_05-2015.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Patriarch_Ponds_2.jpg/600px-Patriarch_Ponds_2.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Moscow_July_2011-10a.jpg/600px-Moscow_July_2011-10a.jpg"
+            ]
+        },
+        {
+            name: "Нехорошая квартира (кв. 50)",
+            coords: [55.76787, 37.591983],
+            desc: "Легендарная квартира №50 в доме 302-бис по Большой Садовой. Здесь поселился Воланд со свитой, прошёл спиритический сеанс и бал сатаны. Квартира сгорела без остатка.",
+            quote: "«Квартира была уже не квартирой, а опочивальней сатаны... она всё равно через час сгорела без остатка...»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Bulgakov_House_01.jpg/600px-Bulgakov_House_01.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Bulgakov_House_museum.jpg/600px-Bulgakov_House_museum.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Bulgakov_House_staircase.jpg/600px-Bulgakov_House_staircase.jpg"
+            ]
+        },
+        {
+            name: "Дом Грибоедова / МАССОЛИТ",
+            coords: [55.76486, 37.606161],
+            desc: "Знаменитый ресторан «Дом Грибоедова» — место обитания литературной элиты. Сюда приходит обезумевший Иван Бездомный. Осетрина второй свежести, сплетни и зависть.",
+            quote: "«Любите ли вы, как люблю их я, Иван, эти московские рестораны? ... В двенадцать часов ночи в Доме Грибоедова все были проникнуты нетерпением.»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Moscow_Tverskoy_Boulevard_25_Aug2014_03.jpg/600px-Moscow_Tverskoy_Boulevard_25_Aug2014_03.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Hertzen_House_Moscow_2014.jpg/600px-Hertzen_House_Moscow_2014.jpg"
+            ]
+        },
+        {
+            name: "Театр Варьете",
+            coords: [55.76035, 37.608975],
+            desc: "Здесь прошёл знаменитый сеанс чёрной магии: червонцы с потолка, дамский магазин на сцене и оторванная голова конферансье Бенгальского.",
+            quote: "«Граждане! — закричал Бенгальский, — скандал! Мы в Советской стране! Товарищ режиссер!»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Moscow_Malyy_Gnezdnikovskiy_12.jpg/600px-Moscow_Malyy_Gnezdnikovskiy_12.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Moscow_Satire_Theatre.jpg/600px-Moscow_Satire_Theatre.jpg"
+            ]
+        },
+        {
+            name: "Александровский сад",
+            coords: [55.75264, 37.6094],
+            desc: "Маргарита сидит на скамейке у Кремлёвской стены после исчезновения Мастера. Здесь Азазелло даёт ей волшебный крем.",
+            quote: "«Маргарита сидела под кремлевской стеной на одной из скамеек, поместившись так, что ей был виден Манеж.»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Alexander_Garden_2014_04.jpg/600px-Alexander_Garden_2014_04.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Alexander_Garden_Moscow.jpg/600px-Alexander_Garden_Moscow.jpg"
+            ]
+        },
+        {
+            name: "Дом Пашкова",
+            coords: [55.748917, 37.610072],
+            desc: "Воланд и свита наблюдают с крыши за горящей Москвой. Отсюда они улетают в вечность. Одно из любимых зданий Булгакова.",
+            quote: "«Воланд, одетый во все черное, стоял на крыше дома Пашкова и смотрел на город. Только одна звезда горела над ним — Венера.»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Pashkov_house_2014_02.jpg/600px-Pashkov_house_2014_02.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Pashkov_house_Moscow.jpg/600px-Pashkov_house_Moscow.jpg"
+            ]
+        },
+        {
+            name: "Подвал Мастера (Мансуровский пер.)",
+            coords: [55.7378, 37.6001],
+            desc: "Маленькая квартирка в подвале, где Мастер писал роман о Понтии Пилате и встречался с Маргаритой. Там был камин, который стал символом их любви.",
+            quote: "«Я живу в подвальчике, в маленькой комнатке... Там есть камин, и когда вечером я сажусь к нему, мне кажется, что мы с тобой, Маргарита, счастливы...»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Mansurovskiy_pereulok_9.jpg/600px-Mansurovskiy_pereulok_9.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Mansurovsky_9_Moscow.jpg/600px-Mansurovsky_9_Moscow.jpg"
+            ]
+        },
+        {
+            name: "Особняк Маргариты (Спиридоновка)",
+            coords: [55.7598, 37.5922],
+            desc: "Готический особняк, где Маргарита жила с мужем до встречи с Мастером. Отсюда она вылетает на бал сатаны.",
+            quote: "«Маргарита Николаевна жила в особняке с мужем... Верхний этаж занимала она сама, и там были ее спальня, кабинет и будуар.»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Spiridonovka_17_01.jpg/600px-Spiridonovka_17_01.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Spiridonovka_17_Moscow.jpg/600px-Spiridonovka_17_Moscow.jpg"
+            ]
+        },
+        {
+            name: "Торгсин на Арбате",
+            coords: [55.7522, 37.582],
+            desc: "Коровьев и Бегемот устраивают хаос в магазине: кот требует коньяк, ест мандарины с кожурой и грозит браунингом.",
+            quote: "«Кот Бегемот стоял у прилавка с бутылкой коньяка и требовал: „Еще одну!“»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Smolensky_Boulevard_2014_08.jpg/600px-Smolensky_Boulevard_2014_08.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Arbat_54_Moscow.jpg/600px-Arbat_54_Moscow.jpg"
+            ]
+        },
+        {
+            name: "Дом на набережной",
+            coords: [55.7448, 37.6104],
+            desc: "Здесь жил Аркадий Аполлонович Семплеяров — председатель акумиссисии, пострадавший от свиты Воланда.",
+            quote: "«— Товарищ Семплеяров, — заговорила Маргарита, — ведь вы были на сеансе черной магии?»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/House_on_embankment_2014.jpg/600px-House_on_embankment_2014.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/House_on_embankment_Moscow.jpg/600px-House_on_embankment_Moscow.jpg"
+            ]
+        },
+        {
+            name: "Клиника Стравинского",
+            coords: [55.7308, 37.5804],
+            desc: "Психиатрическая клиника, куда попадает Иван Бездомный после гибели Берлиоза. Здесь Мастер встречается с Иваном.",
+            quote: "«Иван Николаевич очутился в больнице... В палате было бело, чисто и пахло лекарствами.»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Moscow_Psychiatric_Hospital.jpg/600px-Moscow_Psychiatric_Hospital.jpg",
+                "https://via.placeholder.com/600x400?text=Клиника+Стравинского+историческое+здание"
+            ]
+        },
+        {
+            name: "Храм Христа Спасителя",
+            coords: [55.7447, 37.6052],
+            desc: "Ориентир во время полёта Маргариты над Москвой. В романе храм ещё стоял на своём месте (до сноса в 1931 году).",
+            quote: "«Маргарита пролетала над храмом Христа Спасителя, который еще стоял тогда...»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Cathedral_of_Christ_the_Saviour_2014.jpg/600px-Cathedral_of_Christ_the_Saviour_2014.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Moscow_Cathedral_of_Christ_the_Saviour.jpg/600px-Moscow_Cathedral_of_Christ_the_Saviour.jpg"
+            ]
+        },
+        {
+            name: "Воробьёвы горы",
+            coords: [55.7113, 37.5506],
+            desc: "Финальная сцена прощания Мастера и Маргариты с Москвой. Земля покрывается трещинами, и герои уходят в вечность.",
+            quote: "«Прощай, Москва! Прощай навсегда!»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Sparrow_Hills_Moscow_2014.jpg/600px-Sparrow_Hills_Moscow_2014.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Sparrow_Hills_view.jpg/600px-Sparrow_Hills_view.jpg"
+            ]
+        },
+        {
+            name: "Новодевичий монастырь",
+            coords: [55.725868, 37.557135],
+            desc: "Финальный покой Мастера и Маргариты. Здесь же находится могила Михаила Булгакова — место паломничества поклонников романа.",
+            quote: "«Боги, боги мои... Как печальна вечерняя земля! Как таинственны туманы над болотами! Кто испытал это на себе, тот знает...»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Novodevichy_convent_2014_07.jpg/600px-Novodevichy_convent_2014_07.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Bulgakov_grave.jpg/600px-Bulgakov_grave.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Novodevichy_Cemetery_Moscow.jpg/600px-Novodevichy_Cemetery_Moscow.jpg"
+            ]
+        },
+        {
+            name: "Сад «Аквариум»",
+            coords: [55.7674, 37.5952],
+            desc: "Прототип театра Варьете — Московский Мюзик-холл. Администратора Варенуху превратили в вампира и носили по саду.",
+            quote: "«В саду Аквариум, — заговорил Римский, — этого не может быть...»",
+            images: [
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Moscow_Sad_Aquarium.jpg/600px-Moscow_Sad_Aquarium.jpg",
+                "https://via.placeholder.com/600x400?text=Сад+Аквариум+историческое+фото"
+            ]
+        }
+    ];
+
+    ymaps.ready(function() {
+        // Создаём карту
+        const map = new ymaps.Map("map", {
+            center: [55.751574, 37.573856],
+            zoom: 11,
+            controls: ["zoomControl", "fullscreenControl"]
+        });
+
+        // Создаём метки для всех мест
+        places.forEach(place => {
+            // Строим HTML для балуна с галереей изображений
+            let imagesHtml = '';
+            place.images.forEach(imgUrl => {
+                imagesHtml += `<img src="${imgUrl}" style="width:100%; border-radius:8px; margin-bottom:8px; object-fit:cover; max-height:180px;" onerror="this.onerror=null; this.style.display='none'">`;
+            });
+            
+            const balloonContent = `
+                <div style="max-width: 320px; font-family: Georgia, serif;">
+                    <div style="max-height: 280px; overflow-y: auto; margin-bottom: 10px;">
+                        ${imagesHtml}
+                    </div>
+                    <h3 style="margin: 0 0 8px 0; color: #c9a03d; border-left: 3px solid #c9a03d; padding-left: 10px;">${place.name}</h3>
+                    <p style="margin: 8px 0; font-size: 13px; line-height: 1.4;"><strong>📖 Описание:</strong> ${place.desc}</p>
+                    <p style="margin: 8px 0; font-size: 13px; font-style: italic; background: #f5efe7; padding: 10px; border-radius: 8px;">${place.quote}</p>
+                    <p style="margin: 5px 0 0 0; font-size: 11px; color: #8b7a66; text-align: right;">✦ литературная локация</p>
+                </div>
+            `;
+
+            const placemark = new ymaps.Placemark(place.coords, {
+                balloonContent: balloonContent,
+                hintContent: place.name
+            }, {
+                preset: "islands#brownDotIcon",
+                balloonMaxWidth: 360,
+                balloonOffset: [0, -20]
+            });
+            map.geoObjects.add(placemark);
+        });
+
+        // Построение маршрута между всеми точками
+        try {
+            const points = places.map(p => p.coords);
+            const multiRoute = new ymaps.multiRouter.MultiRoute({
+                referencePoints: points,
+                params: { routingMode: "auto", results: 1 }
+            }, {
+                routeStrokeColor: "8b5a2b",
+                routeStrokeWidth: 4,
+                routeStrokeOpacity: 0.8,
+                boundsAutoApply: true
+            });
+            
+            multiRoute.model.events.add("requestsuccess", () => {
+                map.geoObjects.add(multiRoute);
+                const bounds = multiRoute.getBounds();
+                if (bounds) map.setBounds(bounds, { checkZoomRange: true, zoomMargin: 50 });
+            });
+            
+            map.geoObjects.add(multiRoute);
+        } catch(e) {
+            // Если маршрут не построился — просто показываем все метки
+            const allPoints = places.map(p => p.coords);
+            const bounds = ymaps.geoQuery(allPoints).getBounds();
+            if (bounds) map.setBounds(bounds, { zoomMargin: 50 });
+        }
+    });
+</script>
+</body>
+</html>
